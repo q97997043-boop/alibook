@@ -1,13 +1,8 @@
-Email tracker · HTML
-Copy
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
+<html lang="ru"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alibook — Управление аккаунтами</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Mono:wght@300;400;500&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#080810;--surface:#10101c;--surface2:#181828;
@@ -253,6 +248,14 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
   .ctop{flex-direction:column;}
 }
 </style>
+<style>
+#copyBtn{position:fixed;bottom:26px;left:26px;z-index:9999;
+  background:linear-gradient(135deg,#6c63ff,#8f59ff);border:none;border-radius:12px;
+  padding:12px 22px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;
+  cursor:pointer;box-shadow:0 4px 20px rgba(108,99,255,.4);transition:all .2s;}
+#copyBtn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(108,99,255,.55);}
+#copyBtn.copied{background:linear-gradient(135deg,#00d4aa,#00b896);box-shadow:0 4px 20px rgba(0,212,170,.4);}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -262,36 +265,36 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
       <svg class="logo-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="lg1" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#6c63ff"/>
-            <stop offset="50%" stop-color="#ff6584"/>
-            <stop offset="100%" stop-color="#00d4aa"/>
+            <stop offset="0%" stop-color="#6c63ff"></stop>
+            <stop offset="50%" stop-color="#ff6584"></stop>
+            <stop offset="100%" stop-color="#00d4aa"></stop>
           </linearGradient>
           <linearGradient id="lg2" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#6c63ff" stop-opacity="0.18"/>
-            <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.10"/>
+            <stop offset="0%" stop-color="#6c63ff" stop-opacity="0.18"></stop>
+            <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.10"></stop>
           </linearGradient>
         </defs>
         <!-- background circle -->
-        <rect width="52" height="52" rx="14" fill="url(#lg2)"/>
-        <rect width="52" height="52" rx="14" fill="none" stroke="url(#lg1)" stroke-width="1.2" stroke-opacity="0.35"/>
+        <rect width="52" height="52" rx="14" fill="url(#lg2)"></rect>
+        <rect width="52" height="52" rx="14" fill="none" stroke="url(#lg1)" stroke-width="1.2" stroke-opacity="0.35"></rect>
         <!-- book pages -->
-        <path d="M13 14 C13 14 20 12 26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.15"/>
-        <path d="M13 14 C13 14 20 12 26 16 L26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.25"/>
-        <path d="M26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 Z" fill="url(#lg1)" opacity="0.18"/>
+        <path d="M13 14 C13 14 20 12 26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.15"></path>
+        <path d="M13 14 C13 14 20 12 26 16 L26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.25"></path>
+        <path d="M26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 Z" fill="url(#lg1)" opacity="0.18"></path>
         <!-- spine line -->
-        <line x1="26" y1="16" x2="26" y2="40" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="26" y1="16" x2="26" y2="40" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"></line>
         <!-- left page lines -->
-        <line x1="16" y1="21" x2="24" y2="20" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="16" y1="25" x2="24" y2="24" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="16" y1="29" x2="24" y2="28" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="16" y1="33" x2="24" y2="32" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <line x1="16" y1="21" x2="24" y2="20" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="16" y1="25" x2="24" y2="24" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="16" y1="29" x2="24" y2="28" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="16" y1="33" x2="24" y2="32" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.5"></line>
         <!-- right page lines -->
-        <line x1="28" y1="20" x2="36" y2="21" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="28" y1="24" x2="36" y2="25" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="28" y1="28" x2="36" y2="29" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
-        <line x1="28" y1="32" x2="36" y2="33" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <line x1="28" y1="20" x2="36" y2="21" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="28" y1="24" x2="36" y2="25" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="28" y1="28" x2="36" y2="29" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"></line>
+        <line x1="28" y1="32" x2="36" y2="33" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.5"></line>
         <!-- dot accent -->
-        <circle cx="26" cy="13" r="2.2" fill="url(#lg1)"/>
+        <circle cx="26" cy="13" r="2.2" fill="url(#lg1)"></circle>
       </svg>
       <div class="logo-text">
         <span class="logo-ali">Ali</span><span class="logo-book">book</span>
@@ -304,7 +307,7 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
   <div class="sync-bar">
     <span class="sync-dot"></span>
     <span>Онлайн — данные синхронизируются между устройствами</span>
-    <span id="lastSync"></span>
+    <span id="lastSync">· обновлено в 22:06:29</span>
   </div>
 
   <!-- SEARCH -->
@@ -337,9 +340,7 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
       </div>
       <div class="field">
         <label>Магазин *</label>
-        <select id="inStore">
-          <option value="">— Выбрать магазин —</option>
-        </select>
+        <select id="inStore"><option value="">— Выбрать магазин —</option><option value="Plati Digi store">Plati Digi store</option><option value="Plati magic store">Plati magic store</option><option value="GGsel bounty">GGsel bounty</option><option value="GGsel Digi store">GGsel Digi store</option></select>
       </div>
     </div>
     <!-- Строка 2 -->
@@ -347,7 +348,7 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
       <div class="field">
         <label>Кол-во месяцев</label>
         <select id="inMonths">
-          <option value="1" selected>1 месяц</option>
+          <option value="1" selected="">1 месяц</option>
           <option value="2">2 месяца</option>
           <option value="3">3 месяца</option>
           <option value="4">4 месяца</option>
@@ -369,7 +370,7 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
         <label>Заметка (необяз.)</label>
         <input type="text" id="inNote" placeholder="Доп. информация">
       </div>
-      <div class="field" style="visibility:hidden"><label>.</label><input disabled></div>
+      <div class="field" style="visibility:hidden"><label>.</label><input disabled=""></div>
       <button class="btn-add" onclick="addAccount()">Добавить</button>
     </div>
   </div>
@@ -391,22 +392,22 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
   <!-- FILTER TABS -->
   <div class="filter-row">
     <div class="filter-tabs">
-      <button class="ftab active" data-f="all"     onclick="setFilter('all',this)">Все</button>
-      <button class="ftab go"     data-f="GO"       onclick="setFilter('GO',this)">GO</button>
-      <button class="ftab plus"   data-f="Plus"     onclick="setFilter('Plus',this)">Plus</button>
-      <button class="ftab"        data-f="due"      onclick="setFilter('due',this)">🔔 Уведомить</button>
-      <button class="ftab"        data-f="active"   onclick="setFilter('active',this)">Активные</button>
-      <button class="ftab"        data-f="finished" onclick="setFilter('finished',this)">✓ Завершённые</button>
+      <button class="ftab active" data-f="all" onclick="setFilter('all',this)">Все</button>
+      <button class="ftab go" data-f="GO" onclick="setFilter('GO',this)">GO</button>
+      <button class="ftab plus" data-f="Plus" onclick="setFilter('Plus',this)">Plus</button>
+      <button class="ftab" data-f="due" onclick="setFilter('due',this)">🔔 Уведомить</button>
+      <button class="ftab" data-f="active" onclick="setFilter('active',this)">Активные</button>
+      <button class="ftab" data-f="finished" onclick="setFilter('finished',this)">✓ Завершённые</button>
     </div>
     <div class="sec-lbl-wrap">
       <span class="sec-lbl">Список аккаунтов</span>
-      <span class="result-count" id="resultCount"></span>
+      <span class="result-count" id="resultCount" style="display: none;"></span>
     </div>
   </div>
 
   <!-- LIST -->
   <div class="list" id="list">
-    <div class="empty" id="emptyEl">
+    <div class="empty" id="emptyEl" style="display: block;">
       <div class="empty-icon">📭</div>
       <div class="empty-t">Аккаунтов пока нет</div>
       <div class="empty-s">Добавьте первый аккаунт выше</div>
@@ -437,7 +438,7 @@ mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;paddi
     <div class="mtitle">Задача выполнена?</div>
     <div class="mdesc" id="mDoneDesc"></div>
     <div class="mbtns">
-      <button class="mc"  onclick="closeM2()">Нет, отмена</button>
+      <button class="mc" onclick="closeM2()">Нет, отмена</button>
       <button class="mok" onclick="confirmDone()">Да, выполнено ✓</button>
     </div>
   </div>
@@ -466,20 +467,22 @@ function updateStoreOptions(){
 
 // ── DATA ──────────────────────────────────────────────────────────────
 let accounts = [];
-let _storageReady = false;
+const DB_URL = 'https://alibook-5aca2-default-rtdb.firebaseio.com/accounts.json';
 
 async function loadAccounts(){
   try {
-    const res = await window.storage.get('alibook-accounts', true);
-    if(res && res.value){
-      accounts = JSON.parse(res.value);
+    const res = await fetch(DB_URL);
+    const data = await res.json();
+    if(data && typeof data === 'object' && !Array.isArray(data)){
+      accounts = Object.values(data).filter(a => a && a.id);
       accounts.forEach(a=>{
         if(!a.type)  a.type  = 'GO';
         if(!a.store) a.store = 'Plati Digi store';
       });
+    } else {
+      accounts = [];
     }
-  } catch(e){ accounts = []; }
-  _storageReady = true;
+  } catch(e){ console.error('Load error:', e); accounts = []; }
   const now = new Date();
   const t = now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   const el = document.getElementById('lastSync');
@@ -491,7 +494,19 @@ let searchQ = '';
 let activeFilter = 'all';
 
 async function save(){
-  try { await window.storage.set('alibook-accounts', JSON.stringify(accounts), true); } catch(e){}
+  try {
+    const obj = {};
+    accounts.forEach(a => { obj['id_' + a.id] = a; });
+    const res = await fetch(DB_URL, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(obj)
+    });
+    if(!res.ok){
+      const err = await res.text();
+      console.error('Firebase save error:', err);
+    }
+  } catch(e){ console.error('Save error:', e); }
 }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 function mDiff(s){
@@ -803,5 +818,18 @@ setInterval(render,60000);
 setInterval(loadAccounts, 30000);
 loadAccounts();
 </script>
-</body>
-</html>
+<button id="copyBtn" onclick="copyAll()" class="">📋 Kodni nusxalash</button>
+<script>
+function copyAll(){
+  const code = document.documentElement.outerHTML;
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ Nusxalandi!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='📋 Kodni nusxalash'; btn.classList.remove('copied'); }, 2500);
+  });
+}
+</script>
+
+
+</body></html>
