@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alibook — Управление аккаунтами</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080810;--surface:#10101c;--surface2:#181828;
+  --border:#252538;--accent:#6c63ff;--accent2:#ff6584;
+  --green:#00d4aa;--yellow:#ffd166;--tg:#229ed9;
+  --text:#e8e8f4;--muted:#5a5a7a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(108,99,255,0.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(108,99,255,0.04) 1px,transparent 1px);
+  background-size:44px 44px;pointer-events:none;z-index:0;}
+
+.wrap{max-width:1060px;margin:0 auto;padding:36px 18px;position:relative;z-index:1;}
+
+/* HEADER */
+header{text-align:center;margin-bottom:40px;}
+.logo-wrap{display:inline-flex;align-items:center;gap:14px;justify-content:center;}
+.logo-svg{width:52px;height:52px;filter:drop-shadow(0 0 16px rgba(108,99,255,0.35)) drop-shadow(0 0 6px rgba(0,212,170,0.2));}
+.logo-text{display:flex;align-items:baseline;font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;letter-spacing:-1.5px;line-height:1;}
+.logo-ali{background:linear-gradient(135deg,#6c63ff,#ff6584);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-book{background:linear-gradient(135deg,#ff6584,#00d4aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sub{color:var(--muted);font-size:0.7rem;margin-top:10px;letter-spacing:2.5px;text-transform:uppercase;}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:22px;}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:13px 18px 13px 46px;color:var(--text);
+  font-family:'DM Mono',monospace;font-size:0.86rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.12);}
+.search-wrap input::placeholder{color:var(--muted);}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem;pointer-events:none;}
+.clear-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;display:none;transition:color .15s;}
+.clear-btn:hover{color:var(--accent2);}
+.clear-btn.vis{display:block;}
+
+/* ADD FORM */
+.add-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:24px;margin-bottom:24px;position:relative;overflow:hidden;}
+.add-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.card-title{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;
+  margin-bottom:16px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+.form-row1{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-row2{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;}
+
+.field{display:flex;flex-direction:column;gap:5px;}
+label{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
+input,select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:9px 13px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.82rem;
+  outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.12);}
+select option{background:var(--surface2);}
+
+/* type badges on selects */
+.select-go select{border-color:rgba(0,212,170,.3);}
+.select-plus select{border-color:rgba(255,209,102,.3);}
+
+.btn-add{background:linear-gradient(135deg,var(--accent),#8f59ff);border:none;border-radius:8px;
+  padding:9px 22px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;white-space:nowrap;}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,99,255,.4);}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;text-align:center;}
+.snum{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;line-height:1;}
+.slbl{font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;}
+.stat-card:nth-child(1) .snum{color:var(--accent);}
+.stat-card:nth-child(2) .snum{color:var(--accent2);}
+.stat-card:nth-child(3) .snum{color:var(--green);}
+.stat-card:nth-child(4) .snum{color:var(--tg);}
+
+/* NOTIF BANNER */
+@keyframes glowBorder{
+  0%,100%{box-shadow:0 0 8px rgba(255,101,132,.35),0 0 22px rgba(255,101,132,.12);border-color:rgba(255,101,132,.5);}
+  50%{box-shadow:0 0 18px rgba(255,101,132,.65),0 0 44px rgba(255,101,132,.25);border-color:rgba(255,101,132,.85);}
+}
+.notif-banner{background:linear-gradient(135deg,rgba(255,101,132,.07),rgba(108,99,255,.07));
+  border:1px solid rgba(255,101,132,.3);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:none;}
+.notif-banner.on{display:block;animation:glowBorder 2s ease-in-out infinite;}
+.notif-head{font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:var(--accent2);
+  margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.notif-row{font-size:0.76rem;color:var(--text);line-height:2;}
+
+/* FILTER TABS */
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.ftab{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:6px 14px;font-family:'Syne',sans-serif;font-weight:600;font-size:0.72rem;
+  color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.5px;}
+.ftab:hover{border-color:var(--accent);color:var(--text);}
+.ftab.active{background:rgba(108,99,255,.15);border-color:var(--accent);color:var(--accent);}
+.ftab.active.go{background:rgba(0,212,170,.1);border-color:var(--green);color:var(--green);}
+.ftab.active.plus{background:rgba(255,209,102,.1);border-color:var(--yellow);color:var(--yellow);}
+
+.sec-lbl-wrap{display:flex;align-items:center;gap:10px;}
+.sec-lbl{font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:2px;}
+.result-count{font-size:0.68rem;color:var(--accent);background:rgba(108,99,255,.12);
+  padding:2px 10px;border-radius:20px;border:1px solid rgba(108,99,255,.2);display:none;}
+
+/* LIST */
+.list{display:flex;flex-direction:column;gap:12px;}
+
+/* ACCOUNT CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;position:relative;overflow:hidden;transition:transform .2s,border-color .3s;}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent);border-radius:3px 0 0 3px;}
+.card:hover{transform:translateX(3px);}
+.card.due{animation:glowBorder 2s ease-in-out infinite;}
+.card.due::before{background:var(--accent2);}
+.card.fin{border-color:rgba(0,212,170,.3);background:linear-gradient(135deg,var(--surface),rgba(0,212,170,.03));}
+.card.fin::before{background:var(--green);}
+/* type color bars */
+.card.type-go::before{background:var(--green);}
+.card.type-plus::before{background:var(--yellow);}
+.card.type-go.due::before,.card.type-plus.due::before{background:var(--accent2);}
+
+/* card top */
+.ctop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.client-info{display:flex;flex-direction:column;gap:3px;}
+.client-code{font-size:0.62rem;color:var(--accent);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.email-lbl{font-family:'Syne',sans-serif;font-size:0.96rem;font-weight:700;color:var(--text);word-break:break-all;}
+.badges{display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap;}
+
+.badge{font-size:0.62rem;padding:3px 9px;border-radius:20px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.b-active{background:rgba(108,99,255,.12);color:var(--accent);border:1px solid rgba(108,99,255,.25);}
+.b-due{background:rgba(255,101,132,.12);color:var(--accent2);border:1px solid rgba(255,101,132,.35);animation:glowBorder 2s ease-in-out infinite;}
+.b-fin{background:rgba(0,212,170,.12);color:var(--green);border:1px solid rgba(0,212,170,.3);}
+.b-go{background:rgba(0,212,170,.1);color:var(--green);border:1px solid rgba(0,212,170,.25);}
+.b-plus{background:rgba(255,209,102,.1);color:var(--yellow);border:1px solid rgba(255,209,102,.25);}
+.b-store{background:rgba(108,99,255,.08);color:#a89fff;border:1px solid rgba(108,99,255,.2);font-size:0.6rem;}
+
+/* contacts */
+.contacts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;
+  padding:4px 11px;border-radius:20px;text-decoration:none;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .15s;}
+.chip.clickable{cursor:pointer;}
+.chip.clickable:hover{transform:translateY(-1px);}
+.chip-tg{color:var(--tg);border-color:rgba(34,158,217,.25);}
+.chip-tg:hover{background:rgba(34,158,217,.1);border-color:rgba(34,158,217,.5);}
+
+/* meta */
+.cmeta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;}
+.mi{display:flex;flex-direction:column;gap:2px;}
+.mk{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;}
+.mv{font-size:0.78rem;color:var(--text);}
+
+/* progress */
+.prog-wrap{margin-top:13px;}
+.prog-lbl{display:flex;justify-content:space-between;font-size:0.62rem;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;}
+.prog-bar{height:4px;background:var(--surface2);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+
+/* dots */
+.dots{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap;}
+.dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:600;border:1px solid var(--border);background:var(--surface2);color:var(--muted);}
+.dot.d-done{background:rgba(0,212,170,.15);border-color:var(--green);color:var(--green);}
+.dot.d-curr{background:rgba(255,101,132,.15);border-color:var(--accent2);color:var(--accent2);animation:glowBorder 2s ease-in-out infinite;}
+
+/* days pill */
+.days-pill{display:inline-flex;align-items:center;gap:5px;font-family:'Syne',sans-serif;
+  font-size:0.7rem;font-weight:700;padding:3px 11px;border-radius:20px;letter-spacing:.3px;}
+.days-ok  {background:rgba(108,99,255,.12);color:var(--accent);border:1px solid rgba(108,99,255,.25);}
+.days-soon{background:rgba(255,209,102,.12);color:var(--yellow);border:1px solid rgba(255,209,102,.35);}
+.days-today{background:rgba(255,101,132,.15);color:var(--accent2);border:1px solid rgba(255,101,132,.4);animation:glowBorder 2s ease-in-out infinite;}
+.days-over{background:rgba(255,101,132,.15);color:var(--accent2);border:1px solid rgba(255,101,132,.4);}
+
+/* actions */
+.cactions{display:flex;gap:7px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap;}
+.bn{background:linear-gradient(135deg,#ff6584,#ff9f43);border:none;border-radius:8px;
+  padding:7px 14px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:0.73rem;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.bn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,101,132,.4);}
+.bv{background:linear-gradient(135deg,var(--green),#00b896);border:none;border-radius:8px;
+  padding:7px 14px;color:#080810;font-family:'Syne',sans-serif;font-weight:700;font-size:0.73rem;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.bv:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,212,170,.4);}
+.bd{background:transparent;border:1px solid rgba(255,101,132,.2);border-radius:8px;
+  padding:7px 12px;color:var(--accent2);font-size:.72rem;cursor:pointer;transition:all .15s;}
+.bd:hover{background:rgba(255,101,132,.08);border-color:var(--accent2);}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:2.6rem;opacity:.3;margin-bottom:10px;}
+.empty-t{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:600;}
+.empty-s{font-size:.7rem;margin-top:6px;}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;z-index:1000;
+  opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;
+  padding:28px 26px;max-width:440px;width:92%;position:relative;overflow:hidden;
+  transform:translateY(20px) scale(.96);transition:transform .25s;}
+.overlay.show .modal{transform:translateY(0) scale(1);}
+.mstripe{position:absolute;top:0;left:0;right:0;height:2px;}
+.micon{font-size:2.2rem;text-align:center;margin-bottom:12px;}
+.mtitle{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;text-align:center;margin-bottom:8px;}
+.mdesc{color:var(--muted);font-size:.78rem;text-align:center;line-height:1.7;margin-bottom:20px;white-space:pre-line;}
+.mbtns{display:flex;gap:10px;}
+.mbtns button{flex:1;padding:10px;border-radius:10px;font-family:'Syne',sans-serif;
+  font-weight:700;font-size:.8rem;cursor:pointer;border:none;transition:all .15s;}
+.mc{background:var(--surface2);color:var(--muted);border:1px solid var(--border) !important;}
+.mc:hover{color:var(--text);border-color:var(--accent) !important;}
+.ms{background:linear-gradient(135deg,#ff6584,#ff9f43);color:#fff;}
+.ms:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,101,132,.4);}
+.mok{background:linear-gradient(135deg,var(--green),#00b896);color:#080810;}
+.mok:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,212,170,.4);}
+.gmail-hint{display:block;text-align:center;margin-top:12px;font-size:.72rem;color:var(--accent);
+  cursor:pointer;text-decoration:underline;background:none;border:none;}
+.gmail-hint:hover{color:var(--green);}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;right:26px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 18px;font-family:'Syne',sans-serif;font-weight:600;font-size:.8rem;
+  z-index:2000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-color:var(--green);color:var(--green);}
+.toast.info{border-color:var(--accent);color:var(--accent);}
+.toast.warn{border-color:var(--yellow);color:var(--yellow);}
+
+mark{background:rgba(108,99,255,.25);color:var(--accent);border-radius:3px;padding:0 2px;}
+/* sync indicator */
+.sync-bar{display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:0.68rem;color:var(--muted);margin-bottom:18px;letter-spacing:1px;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px rgba(0,212,170,.6);animation:syncPulse 2s ease-in-out infinite;}
+@keyframes syncPulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+@media(max-width:720px){
+  .form-row1,.form-row2{grid-template-columns:1fr 1fr;}
+  .form-row2 .btn-add{grid-column:1/-1;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .ctop{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#6c63ff"/>
+            <stop offset="50%" stop-color="#ff6584"/>
+            <stop offset="100%" stop-color="#00d4aa"/>
+          </linearGradient>
+          <linearGradient id="lg2" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#6c63ff" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.10"/>
+          </linearGradient>
+        </defs>
+        <!-- background circle -->
+        <rect width="52" height="52" rx="14" fill="url(#lg2)"/>
+        <rect width="52" height="52" rx="14" fill="none" stroke="url(#lg1)" stroke-width="1.2" stroke-opacity="0.35"/>
+        <!-- book pages -->
+        <path d="M13 14 C13 14 20 12 26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.15"/>
+        <path d="M13 14 C13 14 20 12 26 16 L26 40 C20 36 13 38 13 38 Z" fill="url(#lg1)" opacity="0.25"/>
+        <path d="M26 16 C32 12 39 14 39 14 L39 38 C39 38 32 36 26 40 Z" fill="url(#lg1)" opacity="0.18"/>
+        <!-- spine line -->
+        <line x1="26" y1="16" x2="26" y2="40" stroke="url(#lg1)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- left page lines -->
+        <line x1="16" y1="21" x2="24" y2="20" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="16" y1="25" x2="24" y2="24" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="16" y1="29" x2="24" y2="28" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="16" y1="33" x2="24" y2="32" stroke="url(#lg1)" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <!-- right page lines -->
+        <line x1="28" y1="20" x2="36" y2="21" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="28" y1="24" x2="36" y2="25" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="28" y1="28" x2="36" y2="29" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="28" y1="32" x2="36" y2="33" stroke="#00d4aa" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <!-- dot accent -->
+        <circle cx="26" cy="13" r="2.2" fill="url(#lg1)"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-ali">Ali</span><span class="logo-book">book</span>
+      </div>
+    </div>
+    <div class="sub">Система управления почтовыми аккаунтами</div>
+  </header>
+
+  <!-- SYNC BAR -->
+  <div class="sync-bar">
+    <span class="sync-dot"></span>
+    <span>Онлайн — данные синхронизируются между устройствами</span>
+    <span id="lastSync"></span>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Поиск по email, коду клиента, Telegram, магазину..." oninput="onSearch()">
+    <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+  </div>
+
+  <!-- ADD FORM -->
+  <div class="add-card">
+    <div class="card-title">➕ Добавить новый аккаунт</div>
+    <!-- Строка 1 -->
+    <div class="form-row1">
+      <div class="field">
+        <label>Email адрес *</label>
+        <input type="email" id="inEmail" placeholder="example@gmail.com">
+      </div>
+      <div class="field">
+        <label>Код клиента *</label>
+        <input type="text" id="inCode" placeholder="CLT-001">
+      </div>
+      <div class="field">
+        <label>Тип аккаунта *</label>
+        <select id="inType">
+          <option value="">— Выбрать —</option>
+          <option value="GO">GO</option>
+          <option value="Plus">Plus</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Магазин *</label>
+        <select id="inStore">
+          <option value="">— Выбрать магазин —</option>
+        </select>
+      </div>
+    </div>
+    <!-- Строка 2 -->
+    <div class="form-row2">
+      <div class="field">
+        <label>Кол-во месяцев</label>
+        <select id="inMonths">
+          <option value="1" selected>1 месяц</option>
+          <option value="2">2 месяца</option>
+          <option value="3">3 месяца</option>
+          <option value="4">4 месяца</option>
+          <option value="5">5 месяцев</option>
+          <option value="6">6 месяцев</option>
+          <option value="7">7 месяцев</option>
+          <option value="8">8 месяцев</option>
+          <option value="9">9 месяцев</option>
+          <option value="10">10 месяцев</option>
+          <option value="11">11 месяцев</option>
+          <option value="12">12 месяцев</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Telegram (необяз.)</label>
+        <input type="text" id="inTg" placeholder="@username или +998...">
+      </div>
+      <div class="field">
+        <label>Заметка (необяз.)</label>
+        <input type="text" id="inNote" placeholder="Доп. информация">
+      </div>
+      <div class="field" style="visibility:hidden"><label>.</label><input disabled></div>
+      <button class="btn-add" onclick="addAccount()">Добавить</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="snum" id="sTotal">0</div><div class="slbl">Всего клиентов</div></div>
+    <div class="stat-card"><div class="snum" id="sDue">0</div><div class="slbl">Уведомить сейчас</div></div>
+    <div class="stat-card"><div class="snum" id="sDone">0</div><div class="slbl">Выполнено месяцев</div></div>
+    <div class="stat-card"><div class="snum" id="sTg">0</div><div class="slbl">С Telegram</div></div>
+  </div>
+
+  <!-- NOTIF BANNER -->
+  <div class="notif-banner" id="notifBanner">
+    <div class="notif-head">🔔 Время уведомить клиентов!</div>
+    <div id="notifItems"></div>
+  </div>
+
+  <!-- FILTER TABS -->
+  <div class="filter-row">
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all"     onclick="setFilter('all',this)">Все</button>
+      <button class="ftab go"     data-f="GO"       onclick="setFilter('GO',this)">GO</button>
+      <button class="ftab plus"   data-f="Plus"     onclick="setFilter('Plus',this)">Plus</button>
+      <button class="ftab"        data-f="due"      onclick="setFilter('due',this)">🔔 Уведомить</button>
+      <button class="ftab"        data-f="active"   onclick="setFilter('active',this)">Активные</button>
+      <button class="ftab"        data-f="finished" onclick="setFilter('finished',this)">✓ Завершённые</button>
+    </div>
+    <div class="sec-lbl-wrap">
+      <span class="sec-lbl">Список аккаунтов</span>
+      <span class="result-count" id="resultCount"></span>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div class="list" id="list">
+    <div class="empty" id="emptyEl">
+      <div class="empty-icon">📭</div>
+      <div class="empty-t">Аккаунтов пока нет</div>
+      <div class="empty-s">Добавьте первый аккаунт выше</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 1: Уведомление -->
+<div class="overlay" id="mNotif">
+  <div class="modal">
+    <div class="mstripe" style="background:linear-gradient(90deg,#ff6584,#ff9f43)"></div>
+    <div class="micon">📧</div>
+    <div class="mtitle">Время отправить письмо!</div>
+    <div class="mdesc" id="mNotifDesc"></div>
+    <div class="mbtns">
+      <button class="mc" onclick="closeM1()">Позже</button>
+      <button class="ms" onclick="gmailOpen()">Написать в Gmail ✉️</button>
+    </div>
+    <button class="gmail-hint" onclick="sentAndAsk()">✓ Письмо отправлено — отметить задачу</button>
+  </div>
+</div>
+
+<!-- MODAL 2: Подтверждение задачи -->
+<div class="overlay" id="mDone">
+  <div class="modal">
+    <div class="mstripe" style="background:linear-gradient(90deg,var(--green),var(--accent))"></div>
+    <div class="micon">✅</div>
+    <div class="mtitle">Задача выполнена?</div>
+    <div class="mdesc" id="mDoneDesc"></div>
+    <div class="mbtns">
+      <button class="mc"  onclick="closeM2()">Нет, отмена</button>
+      <button class="mok" onclick="confirmDone()">Да, выполнено ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STORE OPTIONS ─────────────────────────────────────────────────────
+const STORES = [
+  'Plati Digi store',
+  'Plati magic store',
+  'GGsel bounty',
+  'GGsel Digi store'
+];
+
+function updateStoreOptions(){
+  const sel = document.getElementById('inStore');
+  sel.innerHTML = '<option value="">— Выбрать магазин —</option>';
+  STORES.forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s; o.textContent=s;
+    sel.appendChild(o);
+  });
+}
+
+// ── DATA ──────────────────────────────────────────────────────────────
+let accounts = [];
+let _storageReady = false;
+
+async function loadAccounts(){
+  try {
+    const res = await window.storage.get('alibook-accounts', true);
+    if(res && res.value){
+      accounts = JSON.parse(res.value);
+      accounts.forEach(a=>{
+        if(!a.type)  a.type  = 'GO';
+        if(!a.store) a.store = 'Plati Digi store';
+      });
+    }
+  } catch(e){ accounts = []; }
+  _storageReady = true;
+  const now = new Date();
+  const t = now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const el = document.getElementById('lastSync');
+  if(el) el.textContent = '· обновлено в ' + t;
+  render();
+}
+let aid = null;
+let searchQ = '';
+let activeFilter = 'all';
+
+async function save(){
+  try { await window.storage.set('alibook-accounts', JSON.stringify(accounts), true); } catch(e){}
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function mDiff(s){
+  const d=new Date(s), n=new Date();
+  return (n.getFullYear()-d.getFullYear())*12+(n.getMonth()-d.getMonth());
+}
+function isDue(a){ return mDiff(a.startDate) > a.done && a.done < a.total; }
+function isFin(a){ return a.done >= a.total; }
+function fDate(s){ return new Date(s).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}); }
+function nextDate(a){
+  const d=new Date(a.startDate);
+  d.setMonth(d.getMonth()+a.done+1);
+  return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'});
+}
+function daysUntilNext(a){
+  const d=new Date(a.startDate);
+  d.setMonth(d.getMonth()+a.done+1);
+  d.setHours(0,0,0,0);
+  const now=new Date(); now.setHours(0,0,0,0);
+  return Math.round((d-now)/(1000*60*60*24));
+}
+function daysLabel(a){
+  if(isFin(a)) return null;
+  const days=daysUntilNext(a);
+  if(days<0)  return {text:`Просрочено на ${Math.abs(days)} дн.`, cls:'days-over'};
+  if(days===0) return {text:'Сегодня!', cls:'days-today'};
+  if(days<=7)  return {text:`Осталось ${days} дн.`, cls:'days-soon'};
+  return {text:`Осталось ${days} дн.`, cls:'days-ok'};
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+function toast(msg, type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'),3600);
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────
+function onSearch(){
+  const v=document.getElementById('searchInput').value.trim();
+  searchQ=v.toLowerCase();
+  document.getElementById('clearBtn').classList.toggle('vis',v.length>0);
+  render();
+}
+function clearSearch(){
+  document.getElementById('searchInput').value='';
+  searchQ='';
+  document.getElementById('clearBtn').classList.remove('vis');
+  render();
+}
+function matchesSearch(a){
+  if(!searchQ) return true;
+  return (
+    a.email.toLowerCase().includes(searchQ)||
+    (a.code||'').toLowerCase().includes(searchQ)||
+    (a.telegram||'').toLowerCase().includes(searchQ)||
+    (a.store||'').toLowerCase().includes(searchQ)||
+    (a.type||'').toLowerCase().includes(searchQ)||
+    (a.note||'').toLowerCase().includes(searchQ)
+  );
+}
+function highlight(str){
+  if(!searchQ||!str) return str||'';
+  const esc=searchQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return str.replace(new RegExp(`(${esc})`,'gi'),'<mark>$1</mark>');
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────
+function setFilter(f, el){
+  activeFilter=f;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function matchesFilter(a){
+  if(activeFilter==='all')      return true;
+  if(activeFilter==='GO')       return a.type==='GO';
+  if(activeFilter==='Plus')     return a.type==='Plus';
+  if(activeFilter==='due')      return isDue(a)&&!isFin(a);
+  if(activeFilter==='active')   return !isFin(a);
+  if(activeFilter==='finished') return isFin(a);
+  return true;
+}
+
+// ── ADD ───────────────────────────────────────────────────────────────
+function addAccount(){
+  const email = document.getElementById('inEmail').value.trim();
+  const code  = document.getElementById('inCode').value.trim();
+  const type  = document.getElementById('inType').value;
+  const store = document.getElementById('inStore').value;
+  const total = parseInt(document.getElementById('inMonths').value);
+  let   tg    = document.getElementById('inTg').value.trim();
+  const note  = document.getElementById('inNote').value.trim();
+  const date  = todayStr();
+
+  if(!email){ toast('⚠️ Введите email!','warn'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast('⚠️ Неверный формат email!','warn'); return; }
+  if(!code){ toast('⚠️ Введите код клиента!','warn'); return; }
+  if(!type){ toast('⚠️ Выберите тип аккаунта!','warn'); return; }
+  if(!store){ toast('⚠️ Выберите магазин!','warn'); return; }
+  if(accounts.find(a=>a.email===email)){ toast('⚠️ Этот email уже есть!','warn'); return; }
+  if(accounts.find(a=>a.code===code)){ toast('⚠️ Этот код клиента уже есть!','warn'); return; }
+
+  if(tg&&!tg.startsWith('@')&&!tg.startsWith('+')&&!tg.startsWith('http')){
+    if(/^\d/.test(tg)) tg='+'+tg;
+  }
+
+  accounts.push({id:Date.now(), email, code, type, store, startDate:date, total, done:0, telegram:tg, note});
+  save(); render();
+  ['inEmail','inCode','inTg','inNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inType').value='';
+  document.getElementById('inStore').innerHTML='<option value="">— Сначала тип —</option>';
+  toast('✅ Аккаунт добавлен!','ok');
+}
+
+// ── TELEGRAM ─────────────────────────────────────────────────────────
+function tgLink(tg){
+  if(!tg) return null;
+  if(tg.startsWith('http')) return tg;
+  if(tg.startsWith('@')) return `https://t.me/${tg.slice(1)}`;
+  const clean=tg.replace(/[^+\d]/g,'');
+  if(clean.startsWith('+')) return `https://t.me/${clean}`;
+  return `https://t.me/${tg}`;
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────
+function openM1(id){
+  aid=id;
+  const a=accounts.find(x=>x.id===id);
+  document.getElementById('mNotifDesc').textContent=
+    `Аккаунт: ${a.email}\nКлиент: ${a.code} | ${a.type} — ${a.store}\n\nПришло время уведомить за ${a.done+1}-й месяц!\nНапишите письмо через Gmail.`;
+  document.getElementById('mNotif').classList.add('show');
+}
+function closeM1(){
+  document.getElementById('mNotif').classList.remove('show');
+  aid=null;
+}
+function gmailOpen(){
+  const a=accounts.find(x=>x.id===aid);
+  if(!a) return;
+  const subj=encodeURIComponent(`[${a.code}] ${a.type} / ${a.store} — Уведомление за ${a.done+1}-й месяц`);
+  const body=encodeURIComponent(`Здравствуйте!\n\nВаш аккаунт "${a.email}" — ${a.done+1}-й месяц.\nКод клиента: ${a.code}\nТип: ${a.type} | Магазин: ${a.store}\n\nС уважением,\nMailTrack`);
+  window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(a.email)}&su=${subj}&body=${body}`,'_blank');
+}
+function sentAndAsk(){
+  const id=aid;
+  document.getElementById('mNotif').classList.remove('show');
+  aid=id;
+  setTimeout(()=>openM2(id),200);
+}
+
+function openM2(id){
+  aid=id;
+  const a=accounts.find(x=>x.id===id);
+  const left=a.total-a.done-1;
+  document.getElementById('mDoneDesc').textContent=
+    `${a.email} [${a.code}]\n${a.type} / ${a.store}\n\nПодтвердить выполнение ${a.done+1}-го месяца?\n\n`+
+    (left>0?`Прошло ${a.done+1} мес. — осталось ${left} мес.`:`Последний месяц! Все ${a.total} мес. будут завершены.`);
+  document.getElementById('mDone').classList.add('show');
+}
+function closeM2(){
+  document.getElementById('mDone').classList.remove('show');
+  aid=null;
+}
+function confirmDone(){
+  const a=accounts.find(x=>x.id===aid);
+  if(!a) return;
+  a.done++;
+  save(); closeM2(); render();
+  const left=a.total-a.done;
+  toast(left>0?`🎉 ${a.done} мес. выполнено! Осталось ${left} мес.`:`🏆 "${a.email}" — все ${a.total} месяца завершены!`,'ok');
+}
+
+function delAcc(id){
+  if(!confirm('Удалить этот аккаунт?')) return;
+  accounts=accounts.filter(a=>a.id!==id);
+  save(); render();
+  toast('🗑️ Аккаунт удалён.','info');
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────
+function render(){
+  const list=document.getElementById('list');
+  const emptyEl=document.getElementById('emptyEl');
+  const dueList=accounts.filter(a=>isDue(a));
+
+  document.getElementById('sTotal').textContent=accounts.length;
+  document.getElementById('sDue').textContent=dueList.length;
+  document.getElementById('sDone').textContent=accounts.reduce((s,a)=>s+a.done,0);
+  document.getElementById('sTg').textContent=accounts.filter(a=>a.telegram).length;
+
+  // notif banner
+  const banner=document.getElementById('notifBanner');
+  document.getElementById('notifItems').innerHTML=dueList.map(a=>
+    `<div class="notif-row">📧 <b>${a.email}</b> <span style="color:var(--muted)">[${a.code}]</span> — <b>${a.type}</b> / ${a.store} — ${a.done+1}-й месяц</div>`
+  ).join('');
+  banner.classList.toggle('on',dueList.length>0);
+
+  // apply search + filter
+  const filtered=accounts.filter(a=>matchesSearch(a)&&matchesFilter(a));
+
+  const rc=document.getElementById('resultCount');
+  if(searchQ||activeFilter!=='all'){ rc.style.display='inline'; rc.textContent=`${filtered.length} записей`; }
+  else rc.style.display='none';
+
+  [...list.querySelectorAll('.card')].forEach(c=>c.remove());
+
+  if(!accounts.length){ emptyEl.style.display='block'; return; }
+  emptyEl.style.display='none';
+
+  if(!filtered.length){
+    const noRes=document.createElement('div');
+    noRes.className='empty';
+    noRes.innerHTML=`<div class="empty-icon">🔍</div><div class="empty-t">Ничего не найдено</div><div class="empty-s">Попробуйте другой запрос или фильтр</div>`;
+    list.appendChild(noRes); return;
+  }
+
+  // sort: due first, then by days
+  const sorted=[...filtered].sort((a,b)=>{
+    const ad=isDue(a),bd=isDue(b);
+    if(ad&&!bd) return -1;
+    if(!ad&&bd) return 1;
+    if(ad&&bd) return daysUntilNext(a)-daysUntilNext(b);
+    return 0;
+  });
+
+  sorted.forEach(acc=>{
+    const due=isDue(acc), fin=isFin(acc);
+    const pct=Math.min((acc.done/acc.total)*100,100);
+    let fillClr='linear-gradient(90deg,var(--accent),#8f59ff)';
+    if(fin) fillClr='linear-gradient(90deg,var(--green),#00b896)';
+    else if(due) fillClr='linear-gradient(90deg,var(--accent2),#ff9f43)';
+    else if(acc.type==='GO')   fillClr='linear-gradient(90deg,var(--green),#00b896)';
+    else if(acc.type==='Plus') fillClr='linear-gradient(90deg,var(--yellow),#ff9f43)';
+
+    // dots
+    let dots='';
+    for(let i=1;i<=acc.total;i++){
+      let cls='';
+      if(i<=acc.done) cls='d-done';
+      else if(i===acc.done+1&&due) cls='d-curr';
+      dots+=`<div class="dot ${cls}">${i}</div>`;
+    }
+
+    // badges
+    const typeBadge = acc.type==='GO'
+      ? `<span class="badge b-go">GO</span>`
+      : `<span class="badge b-plus">Plus</span>`;
+    const storeBadge = `<span class="badge b-store">${highlight(acc.store)}</span>`;
+    let statusBadge = `<span class="badge b-active">Активен</span>`;
+    if(fin) statusBadge=`<span class="badge b-fin">✓ Завершён</span>`;
+    else if(due) statusBadge=`<span class="badge b-due">🔔 Уведомить!</span>`;
+
+    // days pill
+    const dl=daysLabel(acc);
+    const daysPill=dl?`<span class="days-pill ${dl.cls}">⏱ ${dl.text}</span>`:'';
+
+    // telegram chip
+    let chips='';
+    if(acc.telegram){
+      const link=tgLink(acc.telegram);
+      chips=`<div class="contacts"><a class="chip chip-tg clickable" href="${link}" target="_blank">✈️ ${highlight(acc.telegram)}</a>${acc.note?`<span class="chip">💬 ${acc.note}</span>`:''}</div>`;
+    } else if(acc.note){
+      chips=`<div class="contacts"><span class="chip">💬 ${acc.note}</span></div>`;
+    }
+
+    // buttons
+    let btns='';
+    if(due){
+      btns+=`<button class="bn" onclick="openM1(${acc.id})">📧 Написать</button>`;
+      btns+=`<button class="bv" onclick="openM2(${acc.id})">✓ Задача выполнена</button>`;
+    }
+    btns+=`<button class="bd" onclick="delAcc(${acc.id})">🗑️</button>`;
+
+    const c=document.createElement('div');
+    c.className=`card type-${acc.type}${due?' due':''}${fin?' fin':''}`;
+    c.innerHTML=`
+      <div class="ctop">
+        <div class="client-info">
+          <span class="client-code"># ${highlight(acc.code)}</span>
+          <span class="email-lbl">📧 ${highlight(acc.email)}</span>
+        </div>
+        <div class="badges">${typeBadge}${storeBadge}${statusBadge}${daysPill}</div>
+      </div>
+      ${chips}
+      <div class="cmeta">
+        <div class="mi"><span class="mk">Добавлен</span><span class="mv">${fDate(acc.startDate)}</span></div>
+        <div class="mi"><span class="mk">Длительность</span><span class="mv">${acc.total} мес.</span></div>
+        <div class="mi"><span class="mk">Выполнено</span><span class="mv">${acc.done} / ${acc.total}</span></div>
+        <div class="mi"><span class="mk">Осталось</span><span class="mv">${Math.max(0,acc.total-acc.done)} мес.</span></div>
+        ${!fin?`<div class="mi"><span class="mk">След. уведомление</span><span class="mv">${nextDate(acc)}</span></div>`:''}
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-lbl"><span>Прогресс</span><span>${Math.round(pct)}%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${fillClr}"></div></div>
+      </div>
+      <div class="dots">${dots}</div>
+      <div class="cactions">${btns}</div>
+    `;
+    list.appendChild(c);
+  });
+}
+
+document.getElementById('mNotif').addEventListener('click',function(e){if(e.target===this)closeM1();});
+document.getElementById('mDone').addEventListener('click',function(e){if(e.target===this)closeM2();});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement.closest('.add-card'))addAccount();});
+updateStoreOptions();
+setInterval(render,60000);
+setInterval(loadAccounts, 30000);
+loadAccounts();
+</script>
+</body>
+</html>
